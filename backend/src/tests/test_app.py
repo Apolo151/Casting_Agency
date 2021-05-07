@@ -16,9 +16,7 @@ class CastingAgencyTestCase(unittest.TestCase):
         """ initialize app and define teset variables """
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = 'capstone_test'
-        self.database_path = "postgresql://{}:{}@{}/{}".format(
-            "postgres", "aaaaa","localhost:5432",self.database_name)
+        self.database_path = os.environ['TEST_DATABASE_PATH']
 
         setup_db(self.app, self.database_path)
         db.create_all()

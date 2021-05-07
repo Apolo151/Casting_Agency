@@ -2,16 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Integer, Date, create_engine, ForeignKey
 from flask_migrate import Migrate
+import os
 
-# Enable debug mode.
-DEBUG = True
-database_path = 'postgresql://postgres:aaaaa@localhost:5432/capstone'
 
 # Connect to the database
-
-#app.config['SECRET_KEY'] = SECRET_KEY
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:aaaaa@localhost:5432/fyyur'
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+database_path = os.environ['DATABASE_PATH']
 
 db = SQLAlchemy()
 
@@ -23,11 +18,11 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
 
 
-#migrate = Migrate(app, db)
-
 def db_drop_and_create_all(db=SQLAlchemy()):
     db.drop_all()
     db.create_all()
+
+# create database tables
 
 class Actor(db.Model):
     __tablename__ = "actors"
