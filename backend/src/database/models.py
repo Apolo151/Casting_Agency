@@ -6,6 +6,7 @@ import os
 
 
 # Connect to the database
+# database name =  capstone
 database_path = os.environ['DATABASE_PATH']
 
 db = SQLAlchemy()
