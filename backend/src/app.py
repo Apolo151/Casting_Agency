@@ -5,6 +5,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from database.models import Actor, Movie, Casting, db_drop_and_create_all, setup_db, db
+from auth.auth import AuthError, requires_auth
 
 
 def format_model(model_list):
@@ -36,7 +37,8 @@ def create_app(test_config=None):
 
     # get all actors
     @app.route("/actors")
-    def get_actors():
+    @requires_auth("get:actors")
+    def get_actors(payload):
         # get all actors and return them formatted
         actors = Actor.query.all()
         actors_count =  Actor.query.count()
@@ -49,7 +51,8 @@ def create_app(test_config=None):
 
     # get all movies
     @app.route("/movies")
-    def get_movies():
+    @requires_auth("get:movies")
+    def get_movies(payload):
         # get all movies and return them formatted
         movies = Movie.query.all()
         movies_count = Movie.query.count()
@@ -62,7 +65,8 @@ def create_app(test_config=None):
 
     # post a new actor
     @app.route("/actors", methods=['POST'])
-    def add_actor():
+    @requires_auth("post:actors")
+    def add_actor(payload):
         try:
             # get the request data
             data = request.get_json()
@@ -88,7 +92,8 @@ def create_app(test_config=None):
 
     # post a new movie
     @app.route('/movies', methods=['POST'])
-    def add_movie():
+    @requires_auth("post:movies")
+    def add_movie(payload):
         try:
             # get the request data
             data = request.get_json()
@@ -113,7 +118,8 @@ def create_app(test_config=None):
 
     # update an existing actor data
     @app.route('/actors/<int:actor_id>', methods=['PATCH'])
-    def update_actor(actor_id):
+    @requires_auth("patch:actors")
+    def update_actor(payload, actor_id):
         try:
             # get the request data
             data = request.get_json()
@@ -146,7 +152,8 @@ def create_app(test_config=None):
 
     # update an existing movie data
     @app.route("/movies/<int:movie_id>", methods=['PATCH'])
-    def update_movie(movie_id):
+    @requires_auth("patch:movies")
+    def update_movie(payload, movie_id):
         try:
             # get the request data
             data = request.get_json()
@@ -175,7 +182,8 @@ def create_app(test_config=None):
 
     # delete an actor
     @app.route("/actors/<int:actor_id>", methods=['DELETE'])
-    def delete_actor(actor_id):
+    @requires_auth("delete:actors")
+    def delete_actor(payload, actor_id):
         try:
             # check if the actor exists in the database
             actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
@@ -194,7 +202,8 @@ def create_app(test_config=None):
 
     # delete a movie
     @app.route("/movies/<int:movie_id>", methods=['DELETE'])
-    def delete_movie(movie_id):
+    @requires_auth("delete:movies")
+    def delete_movie(payload, movie_id):
         try:
             # check if the movie exists in the database
             movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
@@ -257,13 +266,13 @@ def create_app(test_config=None):
         }), 404
 
 
-    #@app.errorhandler(AuthError)
-    #def Auth_error(error):
-        #return jsonify({
-        #    "success": False,
-        #    "error": error.status_code,
-        #    "message": error.error
-        #}), error.status_code
+    @app.errorhandler(AuthError)
+    def Auth_error(error):
+        return jsonify({
+            "success": False,
+            "error": error.status_code,
+            "message": error.error
+        }), error.status_code
 
     return app
 
