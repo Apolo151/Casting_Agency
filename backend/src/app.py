@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append(".")
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from database.models import Actor, Movie, Casting, db_drop_and_create_all, setup_db, db
@@ -18,7 +18,7 @@ def format_model(model_list):
 
 #create and configure the app
 def create_app(test_config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="../../frontend/templates")
     setup_db(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -34,6 +34,16 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
         return response
+
+
+    # login
+    #@app.route("/login")
+    #def login():
+    #    return render_template("login.html")
+
+    #@app.route("/login_results")
+    #def login_results():
+    #    return render_template("login_results.html")
 
     # get all actors
     @app.route("/actors")
@@ -174,7 +184,7 @@ def create_app(test_config=None):
             updated_movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
             return jsonify({
                 "success": True,
-                "actor": updated_movie.format()
+                "movie": updated_movie.format()
             })
         except Exception as e:
             print(e)
@@ -275,6 +285,7 @@ def create_app(test_config=None):
         }), error.status_code
 
     return app
-
+    
+APP = create_app()
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)
