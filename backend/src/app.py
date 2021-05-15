@@ -36,14 +36,14 @@ def create_app(test_config=None):
         return response
 
 
-    # login
-    #@app.route("/login")
-    #def login():
-    #    return render_template("login.html")
+    #login
+    @app.route("/login")
+    def login():
+        return render_template("login.html")
 
-    #@app.route("/login_results")
-    #def login_results():
-    #    return render_template("login_results.html")
+    @app.route("/login_results")
+    def login_results():
+        return render_template("login_results.html")
 
     # get all actors
     @app.route("/actors")

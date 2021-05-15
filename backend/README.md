@@ -63,9 +63,61 @@ flask run --reload
 
 The `--reload` flag will detect file changes and restart the server automatically.
 
-## Endpoints
+## Api documentation
+### Api Base URL
+https://herokuab
+
+### Endpoints
+
+#### Get /actors
+query actors
+- Fetches a list of dictionaries of actors
+- Request Headers : None
+- Requiers permission: `get:actors`
+- Returns:
+  - A list of actors objects with the fields:
+    - integer `id`
+    - string `name`
+    - integer `age`
+    - string `gender`
+  - A boolean `success`
+  - An integer `actors_count` (total number of actors)
+##### Example response
+```python
+{
+    "actors": [
+        {
+            "age": 54,
+            "gender": "female",
+            "id": 3,
+            "name": "Salma Hayek"
+        },
+        {
+            "age": 64,
+            "gender": "male",
+            "id": 2,
+            "name": "Tom Hanks"
+        },
+        {
+            "age": 58,
+            "gender": "male",
+            "id": 4,
+            "name": "Tom Cruise"
+        }
+    ],
+    "actors_count": 3,
+    "success": true
+}
+
+```
 
 
+   
+
+
+
+
+### Error codes
 Error codes the API returns:
 - 400 : bad request
 - 404 : resource not found

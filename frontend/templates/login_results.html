@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login results</title>
+</head>
+
+<body>
+    <h3>Your JWT token: </h3>
+    <h3 id="token"></h3>
+
+</body>
+<script>
+    const querystring = window.location.hash;
+    //console.log(querystring);
+    const token = (querystring.split("=")[1]).split("&")[0];
+    console.log(token)
+    document.getElementById("token").innerHTML = token;
+</script>
+
+</html>
