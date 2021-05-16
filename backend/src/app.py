@@ -7,13 +7,21 @@ from flask_cors import CORS
 from database.models import Actor, Movie, Casting, db_drop_and_create_all, setup_db, db
 from auth.auth import AuthError, requires_auth
 
+class Already_Exists_Error(Exception):
+    def __init__(self, error, status_code):
+        self.error = error
+        self.status_code = status_code
 
-def format_model(model_list):
-    formatted = [item.format() for item in model_list]
-    return formatted
+ITEMS_PER_PAGE = 10
 
+# defining a function to paginate items for a page
+def paginate_items(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * ITEMS_PER_PAGE
+    end = start + ITEMS_PER_PAGE
+    items = [item.format() for item in selection]
+    return items[start:end]
 
-#main_view_func = Main.as_view('main')
 
 
 #create and configure the app
@@ -50,12 +58,12 @@ def create_app(test_config=None):
     @requires_auth("get:actors")
     def get_actors(payload):
         # get all actors and return them formatted
-        actors = Actor.query.all()
+        selection = Actor.query.order_by(Actor.id).all()
+        actors = paginate_items(request, selection)
         actors_count =  Actor.query.count()
-        actors_list = format_model(actors)
         return jsonify({
             "success": True,
-            "actors": actors_list,
+            "actors": actors,
             "actors_count": actors_count
         })
 
@@ -64,12 +72,12 @@ def create_app(test_config=None):
     @requires_auth("get:movies")
     def get_movies(payload):
         # get all movies and return them formatted
-        movies = Movie.query.all()
+        selection = Movie.query.order_by(Movie.id).all()
+        movies =  paginate_items(request, selection)
         movies_count = Movie.query.count()
-        movies_list = format_model(movies)
         return jsonify({
             "success": True,
-            "movies": movies_list,
+            "movies": movies,
             "movies_count": movies_count
         })
 
@@ -82,23 +90,36 @@ def create_app(test_config=None):
             data = request.get_json()
             if data == None:
                 abort(400)
-            name = data.get('name')
+            name = data['name']
             age = data.get('age')
             gender = data.get('gender')
+            # check if actor already exists in database
+            the_actor = Actor.query.filter(Actor.name == name).one_or_none()
+            if the_actor is not None:
+                raise Already_Exists_Error({
+                    "code": "Conflict",
+                    "description": "actor already exists in database"
+                }, 409)
             # insert the actor to the database
             actor = Actor(name=name, age=age, gender=gender)
             actor.insert()
             # return success with the added actor data
             the_actor = Actor.query.filter(Actor.name == actor.name).one_or_none()
-            formatted_actor = the_actor.format()
+            actor_id = the_actor.id
             return jsonify({
                 "success": True,
-                "actor": formatted_actor
+                "created": actor_id
             })
 
         except Exception as e:
             print(e)
-            abort(422)
+            if isinstance(e,Already_Exists_Error):
+                raise Already_Exists_Error({
+                    "code": "Conflict",
+                    "description": "actor already exists in database"
+                }, 409)
+            else:
+                abort(422)
 
     # post a new movie
     @app.route('/movies', methods=['POST'])
@@ -109,22 +130,35 @@ def create_app(test_config=None):
             data = request.get_json()
             if data == None:
                 abort(400)
-            title = data.get('title')
+            title = data['title']
             release_date = data.get('release_date')
+            the_movie = Movie.query.filter(Movie.title == title).one_or_none()
+            # check if movie already exists in database
+            if the_movie is not None:
+                raise Already_Exists_Error({
+                    "code": "Conflict",
+                    "description": "movie already exists in database"
+                }, 409)
             # insert the movie to the database
             movie = Movie(title=title, release_date=release_date)
             movie.insert()
             # return success with the added movie data
             the_movie = Movie.query.filter(Movie.title == title).one_or_none()
-            formatted_movie = the_movie.format()
+            movie_id = the_movie.id
             return jsonify({
                 "success": True,
-                "movie": formatted_movie
+                "created": movie_id
             })
 
         except Exception as e:
             print(e)
-            abort(422)
+            if isinstance(e,Already_Exists_Error):
+                raise Already_Exists_Error({
+                    "code": "Conflict",
+                    "description": "movie already exists in database"
+                }, 409)
+            else:
+                abort(422)
 
     # update an existing actor data
     @app.route('/actors/<int:actor_id>', methods=['PATCH'])
@@ -156,7 +190,6 @@ def create_app(test_config=None):
                 "actor": updated_actor.format()
             })
         except Exception as e:
-            print("the update actor exception:")
             print(e)
             abort(422)
 
@@ -187,8 +220,9 @@ def create_app(test_config=None):
                 "movie": updated_movie.format()
             })
         except Exception as e:
-            print(e)
-            abort(422)
+            print(e.status_code)
+            abort(404)
+            #abort(422)
 
     # delete an actor
     @app.route("/actors/<int:actor_id>", methods=['DELETE'])
@@ -278,6 +312,14 @@ def create_app(test_config=None):
 
     @app.errorhandler(AuthError)
     def Auth_error(error):
+        return jsonify({
+            "success": False,
+            "error": error.status_code,
+            "message": error.error
+        }), error.status_code
+
+    @app.errorhandler(Already_Exists_Error)
+    def Already_Exists_error(error):
         return jsonify({
             "success": False,
             "error": error.status_code,

@@ -1,3 +1,4 @@
+from enum import unique
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Integer, Date, create_engine, ForeignKey
@@ -29,7 +30,7 @@ class Actor(db.Model):
     __tablename__ = "actors"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     age = Column(Integer, nullable=False)
     gender = Column(String, nullable=False)
 
@@ -61,7 +62,7 @@ class Movie(db.Model):
     __tablename__ = "movies"
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=False, unique=True)
     release_date = Column(Date, nullable=False)
 
     def __init__(self, title, release_date):
