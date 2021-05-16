@@ -115,7 +115,7 @@ class CastingAgencyTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['actor'])
+        self.assertTrue(data['created'])
 
     def test_post_actor_bad_json(self):
         res = self.client().post(
@@ -136,7 +136,7 @@ class CastingAgencyTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['movie'])
+        self.assertTrue(data['created'])
 
     def test_post_movie_no_data(self):
         res = self.client().post(
@@ -145,7 +145,7 @@ class CastingAgencyTestCase(unittest.TestCase):
                 os.environ['EXECUTIVE_PRODUCER_TOKEN'])})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
 
     def test_update_actor_info(self):
@@ -169,7 +169,7 @@ class CastingAgencyTestCase(unittest.TestCase):
                 os.environ['EXECUTIVE_PRODUCER_TOKEN'])})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
 
     def test_update_movie_info(self):
@@ -192,7 +192,7 @@ class CastingAgencyTestCase(unittest.TestCase):
                 os.environ['EXECUTIVE_PRODUCER_TOKEN'])})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
     
     def test_delete_actor(self):

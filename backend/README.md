@@ -155,7 +155,7 @@ add an actor to the database
 - Requires permission: `post:actors`
 - Request Arguments: None
 - Request Headers: `Content-Type: application/json`
-- Request body:
+- Request body (all fields are required):
   - string `name`: actor name
   - integer `age`: actor age
   - string `gender`: actor gender
@@ -185,7 +185,7 @@ add a movie to the database
 - Requires permission: `post:movies`
 - Request Arguments: None
 - Request Headers: `Content-Type: application/json`
-- Request body:
+- Request body (all fields are required):
   - string `title`: movie title
   - date `release_date`: movie release date 
   #### Example Request Body
@@ -208,6 +208,112 @@ add a movie to the database
     "success": true
   }
   ```
+
+### PATCH /actors
+```bash
+curl https://faadsfa/actors/1
+```
+update an existing actor
+- Requires permission: `patch:actors`
+- Request Arguments: integer `actor_id` (the id of the actor you want to modify)
+- Request Headers: `Content-Type: application/json`
+- Request body (all fields are optional):
+  - string `name`
+  - integer `age`
+  - string `gender`
+  #### Example Request Body
+  ```python
+  {
+      "name": "Scarlett Johansson",
+      "age": 32,
+  }
+  ```
+- Returns:
+  - object `actor` (the updated actor)
+  - boolean `success`
+  #### Example Response
+  ```python
+  {
+    "actor": {
+        "age": 32,
+        "gender": "female",
+        "id": 1,
+        "name": "Scarlett Johansson"
+    },
+    "success": true
+  }
+  ```
+
+### PATCH /movies
+```bash
+curl https://faadsfa/movies/1
+```
+update an existing movie
+- Requires permission: `patch:movies`
+- Request Arguments: integer `movie_id` (the id of the movie you want to modify)
+- Request Headers: `Content-Type: application/json`
+- Request body (all fields are optional):
+  - string `title`
+  - date `release_date`
+  #### Example Request Body
+  ```python
+  {
+      "title": "Django Unchained"
+  }
+  ```
+- Returns:
+  - object `movie` (the updated movie)
+  - boolean `success`
+  #### Example Response
+  ```python
+  {
+    "movie": {
+        "id": 1,
+        "release_date": "Mon, 09 Jun 2025 00:00:00 GMT",
+        "title": "Django Unchained"
+    },
+    "success": true
+  }
+  ```
+
+### DELETE /actors
+delete an actor from database
+```bash
+curl https://faadsfa/actors/1
+```
+- Requires permission: `delete:actors`
+- Request Arguments: integer `actor_id` (the id of the actor you want to delete)
+- Request Headers: None
+- Returns:
+  - integer `deleted` (the deleted actor id)
+  - boolean `success`
+  #### Example Response
+  ```python
+  {
+    "deleted": 1,
+    "success": true
+  }
+  ```
+
+### DELETE /movies
+delete a movie from database
+```bash
+curl https://faadsfa/moviess/1
+```
+- Requires permission: `delete:movies`
+- Request Arguments: integer `movie_id` (the id of the movie you want to delete)
+- Request Headers: None
+- Returns:
+  - integer `deleted` (the deleted movie id)
+  - boolean `success`
+  #### Example Response
+  ```python
+  {
+    "deleted": 1,
+    "success": true
+  }
+  ```
+
 
    
 
@@ -237,8 +343,8 @@ add a movie to the database
 ## Testing
 To run the tests, run
 ```
-dropdb capstone_test
-createdb capstone_test
-psql capstone_test < capstone.psql
+dropdb casting_agency_test
+createdb casting_agency_test
+psql casting_agency_test < casting_agency.psql
 python test_app.py
 ```
