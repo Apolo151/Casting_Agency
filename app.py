@@ -35,7 +35,7 @@ def create_app(test_config=None):
     !! NOTE drops all tables and start the database from scratch
     should be run the first time running the app
     '''
-    db_drop_and_create_all(db)
+    #db_drop_and_create_all(db)
 
     @app.after_request
     def after_request(response):
