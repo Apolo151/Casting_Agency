@@ -1,7 +1,7 @@
 # Casting agency backend
 
 ## Motivation
-This is the last project in the Udacity Fullstack Nanodegree
+This is the last project in the Udacity Fullstack Nanodegree,
 It is an api of a casting agency.
 
 ## Getting Started
@@ -362,7 +362,11 @@ curl -X DELETE https://fsnd-ca.herokuapp.com/movies/1
 ## AUTH
 Auth0 is setup with RBAC
 and the bearer tokens for all roles are in setup.sh
-you can use them for your API calls to the running api at the BASE URl.
+you can use them with the `Authorization` header for your API calls to the running api at the BASE URl.
+  ### EXAMPLE
+  ```bash
+   curl https://fsnd-ca.herokuapp.com/actors -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikt6dEE0ZHY4UVJCT0kyTXkxbTlFNiJ9.eyJpc3MiOiJodHRwczovL2Fwb2xsbzE1MS5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA5NmFlMTM2OWI2MjgwMDY4NjJkMWFkIiwiYXVkIjoiY2FzdGluZ19hZ2VuY3kiLCJpYXQiOjE2MjEyMTEyNDIsImV4cCI6MTYyMTI5NzY0MiwiYXpwIjoiZldUazhMZjZLOGI3T1d0WDJobkYxenZGcU44djVVcDIiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.Ou3BguKxjU32gfeXnMYPFqEYsOjX1cGEGcrtnVMl3CGtPDn-w7vqrlYfr0Spjaj6eo-UDYFyUiu0ungrY0DdzRGcgAc9d9YZdont6foVCLFWcG356BTq1BZnAqtImnF5AbkYeKd7pC7W-7-Vcf49Ng4V_W4O-oI4FiVDLKlDZgAjqRpZNZ0PWK8e7T4BqvQ2CQUfyO6qNhygEI3y5q4ZfF0h8JrIXqAwYqi4ftcZjTQB71piQW0z6U_Yqcq0zx30KEpWY8EVi7vbCXSJV2RnZ8bdKXaAnJE7heWIAVlwakH-Dl-hKcBCXgZH8EX7bUrqtNeejLciwq9F7q8kO5Ip6w'
+  ```
 
 if you want to setup Auth0 for local use:
 1. Create a new Auth0 Account
@@ -372,7 +376,8 @@ if you want to setup Auth0 for local use:
     - in API Settings:
         - Enable RBAC
         - Enable Add Permissions in the Access Token
-5. Create new API permissions:
+5. change the AUTH0_DOMAIN and API_AUDIENCE environment variables in the setup.sh to yours.
+6. Create new API permissions:
     - `get:actors`: get actors from the database
     - `get:movies`: get movies from the database
     - `post:actors`: add actors to the database
@@ -381,7 +386,7 @@ if you want to setup Auth0 for local use:
     - `patch:movies`: modify existing movies in the database
     - `delete:actors`: delete actors form the database
     - `delete:movies`: delete movies from the database
-6. Create new roles for:
+7. Create new roles and assign each it's permissions as following:
     - Casting assistant
         - can `get:actors`
         - can `get:movies`
@@ -392,14 +397,27 @@ if you want to setup Auth0 for local use:
         - can `delete:actors`
     - Executive producer
         - can perform all actions
-
-7. change the AUTH0_DOMAIN and API_AUDIENCE environment variables in the setup.sh file.
+Test the endpoints with [Postman](https://getpostman.com) or using curl
+    - Register 3 users - assign each user a unique role.
+    - Sign into each account and make note of the JWT.
+    - use the JWT tokens for your local api calls
 
 
 ## Testing
-To run the tests, run
-```
+before running the tests, run
+```bash
 dropdb CA_test && createdb CA_test
 psql CA_test < CA.psql
+```
+to run the unittest tests, run
+```bash
 python test_app.py
+```
+- if everything went well it should return
+```bash
+........
+----------------------------------------------------------------------
+Ran 22 tests in 9.989s
+
+OK
 ```
