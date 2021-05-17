@@ -26,13 +26,14 @@ def paginate_items(request, selection):
 
 # create and configure the app
 def create_app(test_config=None):
-    app = Flask(__name__, template_folder="../../frontend/templates")
+    app = Flask(__name__)
     setup_db(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     '''
     uncomment the following line to initialize the database
     !! NOTE drops all tables and start the database from scratch
+    should be run the first time running the app
     '''
     # db_drop_and_create_all(db)
 
