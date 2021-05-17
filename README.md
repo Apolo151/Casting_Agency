@@ -64,8 +64,9 @@ flask run --reload
 The `--reload` flag will detect file changes and restart the server automatically.
 
 ## Api documentation
+
 ### Api Base URL
-https://herokuab
+https://fsnd-ca.herokuapp.com/
 
 ### Endpoints
 

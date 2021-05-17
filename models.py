@@ -6,7 +6,7 @@ import os
 
 
 # Connect to the database
-database_path = os.environ['DATABASE_URL']
+database_path = os.environ['DATABASE_URL'].replace('postgres://', 'postgresql://')
 
 db = SQLAlchemy()
 
