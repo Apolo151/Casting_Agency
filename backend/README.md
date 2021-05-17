@@ -69,9 +69,17 @@ https://herokuab
 
 ### Endpoints
 
+### get /login
+returns the html template for login page
+
+### get /login-results
+returns the html template for the login-results page (the callback URL after login)
 
 ### Get /actors
-query actors
+query paginated actors
+```bash
+curl https://afhsaf/actors
+```
 - Fetches a list of dictionaries of actors
 - Requires permission: `get:actors`
 - Request Arguments: integer `page` (defaults to 1 if not provided)
@@ -114,6 +122,9 @@ query actors
 
 ### Get /movies
 query paginated movies
+```bash
+curl https://hafda/movies
+```
 - Fetches a list of dictionaries of movies
 - Requires permission: `get:movies`
 - Request Arguments: integer `page` (defaults to 1 if not provided)
@@ -152,6 +163,9 @@ query paginated movies
 
 ### POST /actors
 add an actor to the database
+```bash
+curl -X POST https://afsgga/actors
+```
 - Requires permission: `post:actors`
 - Request Arguments: None
 - Request Headers: `Content-Type: application/json`
@@ -182,6 +196,9 @@ add an actor to the database
 
 ### POST /movies
 add a movie to the database
+```bash
+curl -X POST https://htsgsa/movies
+```
 - Requires permission: `post:movies`
 - Request Arguments: None
 - Request Headers: `Content-Type: application/json`
@@ -210,10 +227,10 @@ add a movie to the database
   ```
 
 ### PATCH /actors
-```bash
-curl https://faadsfa/actors/1
-```
 update an existing actor
+```bash
+curl -X PATCH https://faadsfa/actors/1
+```
 - Requires permission: `patch:actors`
 - Request Arguments: integer `actor_id` (the id of the actor you want to modify)
 - Request Headers: `Content-Type: application/json`
@@ -245,10 +262,10 @@ update an existing actor
   ```
 
 ### PATCH /movies
-```bash
-curl https://faadsfa/movies/1
-```
 update an existing movie
+```bash
+curl -X PATCH https://faadsfa/movies/1
+```
 - Requires permission: `patch:movies`
 - Request Arguments: integer `movie_id` (the id of the movie you want to modify)
 - Request Headers: `Content-Type: application/json`
@@ -279,7 +296,7 @@ update an existing movie
 ### DELETE /actors
 delete an actor from database
 ```bash
-curl https://faadsfa/actors/1
+curl -X DELETE https://faadsfa/actors/1
 ```
 - Requires permission: `delete:actors`
 - Request Arguments: integer `actor_id` (the id of the actor you want to delete)
@@ -298,7 +315,7 @@ curl https://faadsfa/actors/1
 ### DELETE /movies
 delete a movie from database
 ```bash
-curl https://faadsfa/moviess/1
+curl -X DELETE https://faadsfa/movies/1
 ```
 - Requires permission: `delete:movies`
 - Request Arguments: integer `movie_id` (the id of the movie you want to delete)

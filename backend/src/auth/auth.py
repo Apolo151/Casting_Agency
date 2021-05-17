@@ -1,6 +1,6 @@
 import json
 import os
-from flask import request, _request_ctx_stack
+from flask import request
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
@@ -33,6 +33,7 @@ get_token_auth_header() method
         it raises an AuthError if the header is malformed
     returns the token part of the header
 '''
+
 
 def get_token_auth_header():
     # getting the request authorization header
@@ -69,6 +70,7 @@ check_permissions(permission, payload) method
     return true otherwise
 '''
 
+
 def check_permissions(permission, payload):
     # checking that the permissions key is in the decoded jwt payload
     if "permissions" not in payload:
@@ -101,6 +103,7 @@ def check_permissions(permission, payload):
     !!NOTE urlopen has a common certificate error described here:
     https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
+
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
@@ -173,6 +176,8 @@ def verify_decode_jwt(token):
 '''
 
 # defining the rquires_auth decorator method to use on api routes
+
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)

@@ -1,4 +1,3 @@
-from enum import unique
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Integer, Date, create_engine, ForeignKey
@@ -7,12 +6,18 @@ import os
 
 
 # Connect to the database
-# database name =  capstone
-database_path = os.environ['DATABASE_PATH']
+database_name = os.environ['DATABASE_NAME']
+database_username = os.environ['DATABASE_USERNAME']
+database_userpassword = os.environ['DATABASE_USERPASSWORD']
+database_port = os.environ['DATABASE_PORT']
+
+database_path = "postgresql://{}:{}@{}/{}".format(
+    database_username, database_userpassword, database_port, database_name)
 
 db = SQLAlchemy()
 
-def setup_db(app, database_path=database_path):  
+
+def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
@@ -24,8 +29,8 @@ def db_drop_and_create_all(db=SQLAlchemy()):
     db.drop_all()
     db.create_all()
 
-# create database tables
 
+# create database tables
 class Actor(db.Model):
     __tablename__ = "actors"
 
@@ -42,10 +47,10 @@ class Actor(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def update(self):
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -57,7 +62,8 @@ class Actor(db.Model):
             "age": self.age,
             "gender": self.gender
         }
-    
+
+
 class Movie(db.Model):
     __tablename__ = "movies"
 
@@ -75,7 +81,7 @@ class Movie(db.Model):
 
     def update(self):
         db.session.commit()
-        
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -87,6 +93,8 @@ class Movie(db.Model):
             "release_date": self.release_date
         }
 
+
+# association table between the Actor and Movie models
 class Casting(db.Model):
     __tablename__ = "castings"
 
@@ -96,9 +104,3 @@ class Casting(db.Model):
     def __init__(self, actor_id, movie_id):
         self.actor_id = actor_id
         self.movie_id = movie_id
-
-
-
-    
-
-

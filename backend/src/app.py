@@ -1,11 +1,12 @@
 import os
 import sys
-sys.path.append(".")
 from flask import Flask, request, abort, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from database.models import Actor, Movie, Casting, db_drop_and_create_all, setup_db, db
+sys.path.append(".")
+from database.models import Actor, Movie, db_drop_and_create_all, setup_db, db
 from auth.auth import AuthError, requires_auth
+
 
 class Already_Exists_Error(Exception):
     def __init__(self, error, status_code):
@@ -13,6 +14,7 @@ class Already_Exists_Error(Exception):
         self.status_code = status_code
 
 ITEMS_PER_PAGE = 10
+
 
 # defining a function to paginate items for a page
 def paginate_items(request, selection):
@@ -23,28 +25,29 @@ def paginate_items(request, selection):
     return items[start:end]
 
 
-
-#create and configure the app
+# create and configure the app
 def create_app(test_config=None):
     app = Flask(__name__, template_folder="../../frontend/templates")
     setup_db(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     '''
-    uncomment the following line to initialize the database 
+    uncomment the following line to initialize the database
     !! NOTE drops all tables and start the database from scratch
     '''
-    #db_drop_and_create_all(db)
-
+    # db_drop_and_create_all(db)
 
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
+        response.headers.add(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization')
+        response.headers.add(
+            'Access-Control-Allow-Headers',
+            'GET, POST, PATCH, DELETE, OPTIONS')
         return response
 
-
-    #login
+    # login
     @app.route("/login")
     def login():
         return render_template("login.html")
@@ -60,7 +63,7 @@ def create_app(test_config=None):
         # get all actors and return them formatted
         selection = Actor.query.order_by(Actor.id).all()
         actors = paginate_items(request, selection)
-        actors_count =  Actor.query.count()
+        actors_count = Actor.query.count()
         return jsonify({
             "success": True,
             "actors": actors,
@@ -73,7 +76,7 @@ def create_app(test_config=None):
     def get_movies(payload):
         # get all movies and return them formatted
         selection = Movie.query.order_by(Movie.id).all()
-        movies =  paginate_items(request, selection)
+        movies = paginate_items(request, selection)
         movies_count = Movie.query.count()
         return jsonify({
             "success": True,
@@ -84,10 +87,10 @@ def create_app(test_config=None):
     # post a new actor
     @app.route("/actors", methods=['POST'])
     @requires_auth("post:actors")
-    def add_actor(payload):       
+    def add_actor(payload):
         # get the request data
         data = request.get_json()
-        if data == None:
+        if data is None:
             abort(400)
         try:
             name = data['name']
@@ -104,7 +107,8 @@ def create_app(test_config=None):
             actor = Actor(name=name, age=age, gender=gender)
             actor.insert()
             # return success with the added actor data
-            the_actor = Actor.query.filter(Actor.name == actor.name).one_or_none()
+            the_actor = Actor.query.filter(
+                Actor.name == actor.name).one_or_none()
             actor_id = the_actor.id
             return jsonify({
                 "success": True,
@@ -113,7 +117,7 @@ def create_app(test_config=None):
 
         except Exception as e:
             print(e)
-            if isinstance(e,Already_Exists_Error):
+            if isinstance(e, Already_Exists_Error):
                 raise Already_Exists_Error({
                     "code": "Conflict",
                     "description": "actor already exists in database"
@@ -127,7 +131,7 @@ def create_app(test_config=None):
     def add_movie(payload):
         # get the request data
         data = request.get_json()
-        if data == None:
+        if data is None:
             abort(400)
         try:
             title = data['title']
@@ -152,7 +156,7 @@ def create_app(test_config=None):
 
         except Exception as e:
             print(e)
-            if isinstance(e,Already_Exists_Error):
+            if isinstance(e, Already_Exists_Error):
                 raise Already_Exists_Error({
                     "code": "Conflict",
                     "description": "movie already exists in database"
@@ -184,7 +188,8 @@ def create_app(test_config=None):
             if gender is not None:
                 actor.gender = gender
             actor.update()
-            updated_actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+            updated_actor = Actor.query.filter(
+                Actor.id == actor_id).one_or_none()
             return jsonify({
                 "success": True,
                 "actor": updated_actor.format()
@@ -214,7 +219,8 @@ def create_app(test_config=None):
             if release_date is not None:
                 movie.release_date = release_date
             movie.update()
-            updated_movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+            updated_movie = Movie.query.filter(
+                Movie.id == movie_id).one_or_none()
             return jsonify({
                 "success": True,
                 "movie": updated_movie.format()
@@ -261,7 +267,6 @@ def create_app(test_config=None):
             print(e)
             abort(e)
 
-
     # Error Handling
 
     @app.errorhandler(422)
@@ -272,7 +277,6 @@ def create_app(test_config=None):
             "message": "unprocessable"
             }), 422
 
-
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({
@@ -280,7 +284,6 @@ def create_app(test_config=None):
             "error": 400,
             "message": "bad request"
         }), 400
-
 
     @app.errorhandler(405)
     def method_not_allowed(error):
@@ -298,7 +301,6 @@ def create_app(test_config=None):
             "message": "internal server error"
         }), 500
 
-
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
@@ -306,7 +308,6 @@ def create_app(test_config=None):
             "error": 404,
             "message": "resource not found"
         }), 404
-
 
     @app.errorhandler(AuthError)
     def Auth_error(error):
@@ -325,7 +326,7 @@ def create_app(test_config=None):
         }), error.status_code
 
     return app
-    
+
 APP = create_app()
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)
