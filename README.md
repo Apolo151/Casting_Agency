@@ -371,7 +371,7 @@ you can use them with the `Authorization` header for your API calls to the runni
 if you want to setup Auth0 for local use:
 1. Create a new Auth0 Account
 2. Select a unique tenant domain
-3. Create a new, single page web application
+3. Create a new, regular web application
 4. Create a new API
     - in API Settings:
         - Enable RBAC
