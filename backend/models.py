@@ -6,13 +6,6 @@ import os
 
 
 # Connect to the database
-#database_name = os.environ['DATABASE_NAME']
-#database_username = os.environ['DATABASE_USERNAME']
-#database_userpassword = os.environ['DATABASE_USERPASSWORD']
-#database_port = os.environ['DATABASE_PORT']
-
-#database_path = "postgresql://{}:{}@{}/{}".format(
-    #database_username, database_userpassword, database_port, database_name)
 database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()

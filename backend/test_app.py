@@ -4,9 +4,8 @@ import unittest
 import json
 import datetime
 from flask_sqlalchemy import SQLAlchemy
-sys.path.append("..")
 from app import create_app
-from database.models import setup_db, Actor, Movie, db
+from models import setup_db, Actor, Movie, db
 
 
 class CastingAgencyTestCase(unittest.TestCase):
@@ -16,13 +15,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         """ initialize app and define teset variables """
         self.app = create_app()
         self.client = self.app.test_client
-        #self.database_name = os.environ['TEST_DATABASE_NAME']
-        #self.database_username = os.environ['DATABASE_USERNAME']
-        #self.database_userpassword = os.environ['DATABASE_USERPASSWORD']
-        #self.database_port = os.environ['DATABASE_PORT']
-        #self.database_path = "postgresql://{}:{}@{}/{}".format(
-            #self.database_username, self.database_userpassword,
-            #self.database_port, self.database_name)
         self.database_path = os.environ['TEST_DATABASE_URL']
 
         setup_db(self.app, self.database_path)

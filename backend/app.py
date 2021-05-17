@@ -3,9 +3,8 @@ import sys
 from flask import Flask, request, abort, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-sys.path.append(".")
-from database.models import Actor, Movie, db_drop_and_create_all, setup_db, db
-from auth.auth import AuthError, requires_auth
+from models import Actor, Movie, db_drop_and_create_all, setup_db, db
+from auth import AuthError, requires_auth
 
 
 class Already_Exists_Error(Exception):
