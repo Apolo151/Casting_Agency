@@ -27,7 +27,7 @@ pip install -r requirements.txt
 This will install all of the required packages within the `requirements.txt` file.
 
 For the project to be able to connect to your local database you will have to:
-- open setup.sh and change the DATABASE_URL and TEST_DATABASE_URL to your database URL.
+- open setup.sh and change the DATABASE_URL and TEST_DATABASE_URL to your database URL and test databse URL.
 
 
 ##### Key Dependencies
@@ -361,7 +361,7 @@ curl -X DELETE https://fsnd-ca.herokuapp.com/movies/1
 
 ## AUTH
 Auth0 is setup with RBAC
-and the bearer tokens for all roles are in setup.sh
+and the bearer tokens for all roles are in setup.sh, 
 you can use them with the `Authorization` header for your API calls to the running api at the BASE URl.
   ### EXAMPLE
   ```bash
@@ -401,6 +401,7 @@ Test the endpoints with [Postman](https://getpostman.com) or using curl
     - Register 3 users - assign each user a unique role.
     - Sign into each account and make note of the JWT.
     - use the JWT tokens for your local api calls
+    - go to the login.html file in the templates directory and change the herf on the button to your url in the format (https://{{YOUR_DOMAIN}}/authorize?audience={{API_IDENTIFIER}}&response_type=token&client_id={{YOUR_CLIENT_ID}}&redirect_uri={{YOUR_CALLBACK_URI}})
 
 
 ## Testing
