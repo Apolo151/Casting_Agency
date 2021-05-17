@@ -26,9 +26,8 @@ pip install -r requirements.txt
 
 This will install all of the required packages within the `requirements.txt` file.
 
-Running the project locally means that it can´t access Herokus env variables. To fix this, you need to edit a few informations in setup.py, so it can connect to a local database
-
-- open setup.sh and change the DATABASE_PATH and TEST_DATABASE_PATH to your database path.
+For the project to be able to connect to your local database you will have to:
+- open setup.sh and change the DATABASE_URL and TEST_DATABASE_URL to your database URL.
 
 
 ##### Key Dependencies
@@ -43,7 +42,7 @@ Running the project locally means that it can´t access Herokus env variables. T
 
 From within the `./src` directory first ensure you are working using your created virtual environment.
 
-first, to export the environment variables, run:
+to export the environment variables, run:
 ```bash
 . setup.sh
 ```
@@ -63,6 +62,7 @@ flask run --reload
 
 The `--reload` flag will detect file changes and restart the server automatically.
 
+
 ## Api documentation
 
 ### Api Base URL
@@ -79,7 +79,7 @@ returns the html template for the login-results page (the callback URL after log
 ### Get /actors
 query paginated actors
 ```bash
-curl https://afhsaf/actors
+curl https://fsnd-ca.herokuapp.com/actors
 ```
 - Fetches a list of dictionaries of actors
 - Requires permission: `get:actors`
@@ -124,7 +124,7 @@ curl https://afhsaf/actors
 ### Get /movies
 query paginated movies
 ```bash
-curl https://hafda/movies
+curl https://fsnd-ca.herokuapp.com/movies
 ```
 - Fetches a list of dictionaries of movies
 - Requires permission: `get:movies`
@@ -165,7 +165,7 @@ curl https://hafda/movies
 ### POST /actors
 add an actor to the database
 ```bash
-curl -X POST https://afsgga/actors
+curl -X POST https://fsnd-ca.herokuapp.com/actors
 ```
 - Requires permission: `post:actors`
 - Request Arguments: None
@@ -198,7 +198,7 @@ curl -X POST https://afsgga/actors
 ### POST /movies
 add a movie to the database
 ```bash
-curl -X POST https://htsgsa/movies
+curl -X POST https://fsnd-ca.herokuapp.com/movies
 ```
 - Requires permission: `post:movies`
 - Request Arguments: None
@@ -230,7 +230,7 @@ curl -X POST https://htsgsa/movies
 ### PATCH /actors
 update an existing actor
 ```bash
-curl -X PATCH https://faadsfa/actors/1
+curl -X PATCH https://fsnd-ca.herokuapp.com/actors/1
 ```
 - Requires permission: `patch:actors`
 - Request Arguments: integer `actor_id` (the id of the actor you want to modify)
@@ -265,7 +265,7 @@ curl -X PATCH https://faadsfa/actors/1
 ### PATCH /movies
 update an existing movie
 ```bash
-curl -X PATCH https://faadsfa/movies/1
+curl -X PATCH https://fsnd-ca.herokuapp.com/movies/1
 ```
 - Requires permission: `patch:movies`
 - Request Arguments: integer `movie_id` (the id of the movie you want to modify)
@@ -297,7 +297,7 @@ curl -X PATCH https://faadsfa/movies/1
 ### DELETE /actors
 delete an actor from database
 ```bash
-curl -X DELETE https://faadsfa/actors/1
+curl -X DELETE https://fsnd-ca.herokuapp.com//actors/1
 ```
 - Requires permission: `delete:actors`
 - Request Arguments: integer `actor_id` (the id of the actor you want to delete)
@@ -316,7 +316,7 @@ curl -X DELETE https://faadsfa/actors/1
 ### DELETE /movies
 delete a movie from database
 ```bash
-curl -X DELETE https://faadsfa/movies/1
+curl -X DELETE https://fsnd-ca.herokuapp.com/movies/1
 ```
 - Requires permission: `delete:movies`
 - Request Arguments: integer `movie_id` (the id of the movie you want to delete)
@@ -333,13 +333,13 @@ curl -X DELETE https://faadsfa/movies/1
   ```
 
 
-   
-
-
-
-
 ## Error Handling
-- Errors are returned as a JSON object in the following format:
+- Errors are returned as a JSON object with keys:
+  - boolean `success`
+  - integer `error`
+  - string `message`
+
+  ### Example Error 
 ```python
 {
     'success': False,
@@ -358,11 +358,48 @@ curl -X DELETE https://faadsfa/movies/1
 - 405 : `method not allowed`
 - 500 : `internal server error`
 
+
+## AUTH
+Auth0 is setup with RBAC
+and the bearer tokens for all roles are in setup.sh
+you can use them for your API calls to the running api at the BASE URl.
+
+if you want to setup Auth0 for local use:
+1. Create a new Auth0 Account
+2. Select a unique tenant domain
+3. Create a new, single page web application
+4. Create a new API
+    - in API Settings:
+        - Enable RBAC
+        - Enable Add Permissions in the Access Token
+5. Create new API permissions:
+    - `get:actors`: get actors from the database
+    - `get:movies`: get movies from the database
+    - `post:actors`: add actors to the database
+    - `post:movies`: add movies to the database
+    - `patch:actors`: modify existing actors in the database
+    - `patch:movies`: modify existing movies in the database
+    - `delete:actors`: delete actors form the database
+    - `delete:movies`: delete movies from the database
+6. Create new roles for:
+    - Casting assistant
+        - can `get:actors`
+        - can `get:movies`
+    - Casting director, has same permissions as casting assistant plus
+        - can `post:actors`
+        - can `patch:actors`
+        - can `patch:movies`
+        - can `delete:actors`
+    - Executive producer
+        - can perform all actions
+
+7. change the AUTH0_DOMAIN and API_AUDIENCE environment variables in the setup.sh file.
+
+
 ## Testing
 To run the tests, run
 ```
-dropdb casting_agency_test
-createdb casting_agency_test
-psql casting_agency_test < casting_agency.psql
+dropdb CA_test && createdb CA_test
+psql CA_test < CA.psql
 python test_app.py
 ```

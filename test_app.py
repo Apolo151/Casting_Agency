@@ -9,7 +9,7 @@ from models import setup_db, Actor, Movie, db
 
 
 class CastingAgencyTestCase(unittest.TestCase):
-    """ This Class the Casting Agency test case """
+    """ The Casting Agency test case """
 
     def setUp(self):
         """ initialize app and define teset variables """
@@ -86,7 +86,7 @@ class CastingAgencyTestCase(unittest.TestCase):
         pass
 
     '''
-    Tests for authorization
+    Tests for Auth
     '''
 
     # casting assistant tests
