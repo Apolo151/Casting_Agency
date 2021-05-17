@@ -401,7 +401,10 @@ Test the endpoints with [Postman](https://getpostman.com) or using curl
     - Register 3 users - assign each user a unique role.
     - Sign into each account and make note of the JWT.
     - use the JWT tokens for your local api calls
-    - go to the login.html file in the templates directory and change the herf on the button to your url in the format (https://{{YOUR_DOMAIN}}/authorize?audience={{API_IDENTIFIER}}&response_type=token&client_id={{YOUR_CLIENT_ID}}&redirect_uri={{YOUR_CALLBACK_URI}})
+    - go to the login.html file in the templates directory and change the herf on the button to your url in the format
+    ```bash
+    https://{{YOUR_DOMAIN}}/authorize?audience={{API_IDENTIFIER}}&response_type=token&client_id={{YOUR_CLIENT_ID}}&redirect_uri={{YOUR_CALLBACK_URI}}
+    ```
 
 
 ## Testing
