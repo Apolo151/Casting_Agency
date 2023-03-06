@@ -1,8 +1,8 @@
 # Casting agency backend
 
 ## Motivation
-This is the last project in the Udacity Fullstack Nanodegree,
-It is an api of a casting agency.
+This is a project to showcase learnt backend skills, where I built a Casting Agency API from scratch.
+This is the project I submitted as a Capstone project in the Udacity Fullstack Nanodegree.
 
 ## Getting Started
 
@@ -65,7 +65,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 
 ## Api documentation
 
-### Api Base URL
+### Api Base URL (currently not working)
 https://fsnd-ca.herokuapp.com/
 
 ### Endpoints
